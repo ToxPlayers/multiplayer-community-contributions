@@ -43,26 +43,24 @@ namespace Netcode.Transports.Facepunch
 
         private void Awake()
         {
+            if (initSteamOnAwake)
+                TryValidateSteam();
+				
+			StartCoroutine(InitSteamworks()); 
+        }
+
+        public bool TryValidateSteam()
+        {
+            if (SteamClient.IsValid)
+                return true;
             try
-            {
-                if (initSteamOnAwake)
-                    ValidateSteam();
-            }
+            {  SteamClient.Init(steamAppId, false); }
             catch (Exception e)
             {
                 if (LogLevel <= LogLevel.Error)
                     Debug.LogError($"[{nameof(FacepunchTransport)}] - Caught an exeption during initialization of Steam client: {e}");
             }
-            finally
-            {
-                StartCoroutine(InitSteamworks());
-            }
-        }
-
-        public void ValidateSteam()
-        {
-            if(!SteamClient.IsValid)
-                SteamClient.Init(steamAppId, false);
+            return SteamClient.IsValid;
         }
 
         private void Update()
