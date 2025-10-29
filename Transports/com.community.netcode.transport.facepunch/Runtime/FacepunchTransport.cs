@@ -45,8 +45,8 @@ namespace Netcode.Transports.Facepunch
         {
             try
             {
-                if(initSteamOnAwake && ! SteamClient.IsValid)
-                    SteamClient.Init(steamAppId, false);
+                if (initSteamOnAwake)
+                    ValidateSteam();
             }
             catch (Exception e)
             {
@@ -57,6 +57,12 @@ namespace Netcode.Transports.Facepunch
             {
                 StartCoroutine(InitSteamworks());
             }
+        }
+
+        public void ValidateSteam()
+        {
+            if(!SteamClient.IsValid)
+                SteamClient.Init(steamAppId, false);
         }
 
         private void Update()
