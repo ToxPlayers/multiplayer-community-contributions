@@ -21,6 +21,8 @@ namespace Netcode.Transports.Facepunch
         [Space]
         [Tooltip("The Steam App ID of your game. Technically you're not allowed to use 480, but Valve doesn't do anything about it so it's fine for testing purposes.")]
         [SerializeField] private uint steamAppId = 480;
+        [Tooltip("On awake calls SteamClient.Init(steamAppId, false) if wasn't initialized")]
+        [SerializeField] private bool initSteamOnAwake = true;
 
         [Tooltip("The Steam ID of the user targeted when joining as a client.")]
         [SerializeField] public ulong targetSteamId;
@@ -29,7 +31,6 @@ namespace Netcode.Transports.Facepunch
         [ReadOnly]
         [Tooltip("When in play mode, this will display your Steam ID.")]
         [SerializeField] private ulong userSteamId;
-
         private LogLevel LogLevel => NetworkManager.Singleton.LogLevel;
 
         private class Client
@@ -44,7 +45,8 @@ namespace Netcode.Transports.Facepunch
         {
             try
             {
-                SteamClient.Init(steamAppId, false);
+                if(initSteamOnAwake && ! SteamClient.IsValid)
+                    SteamClient.Init(steamAppId, false);
             }
             catch (Exception e)
             {
